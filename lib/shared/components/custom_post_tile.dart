@@ -21,7 +21,7 @@ class CustomPostTile extends StatefulWidget {
 class _CustomPostTileState extends State<CustomPostTile> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: widget.onPostTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),

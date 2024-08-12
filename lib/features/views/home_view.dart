@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/features/services/auth/auth_service.dart';
-import 'package:twitter_clone/features/viewmodels/post_provider.dart';
+import 'package:twitter_clone/features/viewmodels/providers/post_provider.dart';
 import 'package:twitter_clone/features/views/views.dart';
 import 'package:twitter_clone/shared/components/components.dart';
 
@@ -22,7 +22,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(postProvider.notifier).loadAllPost();
+      ref.read(postUserProvider.notifier).loadAllPost();
     });
   }
 
@@ -50,7 +50,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   }
 
   Future<void> _postMenssage({required String message}) async {
-    await ref.read(postProvider.notifier).postMessage(message: message);
+    await ref.read(postUserProvider.notifier).postMessage(message: message);
     _messageController.clear();
   }
 
@@ -66,7 +66,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
       ),
       drawer: _buildDrawer(),
       body: RefreshIndicator.adaptive(
-        onRefresh: () => ref.read(postProvider.notifier).loadAllPost(),
+        onRefresh: () => ref.read(postUserProvider.notifier).loadAllPost(),
         child: _buildPostList(),
       ),
     );
@@ -75,7 +75,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   Widget _buildPostList() {
     return Consumer(
       builder: (_, ref, child) {
-        final posts = ref.watch(postProvider).posts;
+        final posts = ref.watch(postUserProvider).value ?? [];
         return posts.isEmpty
             ? const Center(child: CircularProgressIndicator.adaptive())
             : ListView.builder(

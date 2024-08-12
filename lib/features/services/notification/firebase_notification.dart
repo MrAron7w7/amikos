@@ -11,18 +11,22 @@ class FirebaseNotification {
     await _firebaseMessaging.requestPermission();
 
     // Buscar/OBtener el token
-    final tokenFcm = await _firebaseMessaging.getToken();
+    //final tokenFcm = await _firebaseMessaging.getToken();
 
-    // Imprimir el token para corroborarlo
-    debugPrint('FCM Token: $tokenFcm');
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
 
-    // Guardamos el token en el provider
-    // Si es diferente de null
-    if (tokenFcm != null) {
-      debugPrint('Token guardado con exito de la clase firebase notification');
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      debugPrint('Permiso de notificaciones otorgado');
+    } else {
+      debugPrint('Permiso de notificaciones no otorgado');
     }
-
-    // Manejar notificaciones cuando la app está en primer plano
-    //FirebaseMessaging.onMessage.listen();
   }
 }

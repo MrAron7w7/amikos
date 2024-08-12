@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:twitter_clone/features/models/post.dart';
 import 'package:twitter_clone/features/models/user.dart';
 import 'package:twitter_clone/features/services/auth/auth_service.dart';
@@ -31,15 +33,12 @@ class DatabaseService {
   Future<void> saveUserInfoInFirebase({
     required String name,
     required String email,
-    String? tokenFcm,
   }) async {
     // Obtener el uid del usuario
     String uid = _auth.currentUser!.uid;
 
     // Obtenemos el nombre del email
     String userName = email.split('@')[0];
-
-    // Obtenemos el token FCM del provider
 
     // Crear un perfil de usuario
     UserProfile userProfile = UserProfile(
@@ -48,7 +47,7 @@ class DatabaseService {
       email: email,
       userName: userName,
       bio: '',
-      tokenFcm: tokenFcm,
+      tokenFcm: '', //<- aqui uso con el provider
     );
 
     // Convertir el perfil de usuario en un Map para poder enviar a firestore
@@ -58,11 +57,25 @@ class DatabaseService {
     await _db.collection('Users').doc(uid).set(userMap);
   }
 
-  Future<void> updateFCMToken(String uid, String token) async {
-    await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(uid)
-        .update({'tokenFcm': token});
+  Future<void> updateFCMToken(String uid) async {
+    final FirebaseFirestore db = FirebaseFirestore.instance;
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    try {
+      // Obtener el token FCM
+      final tokenFcm = await firebaseMessaging.getToken();
+
+      if (tokenFcm != null) {
+        // Actualizar el token FCM en Firestore
+        await db.collection('Users').doc(uid).update({
+          'tokenFcm': tokenFcm,
+        });
+        debugPrint('Token FCM actualizado correctamente para el usuario $uid');
+      } else {
+        debugPrint('No se pudo obtener el token FCM');
+      }
+    } catch (e) {
+      debugPrint('Error al actualizar el token FCM: $e');
+    }
   }
 
   /*

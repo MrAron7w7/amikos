@@ -4,7 +4,7 @@ import '/features/models/post.dart';
 import '/features/services/database/database_service.dart';
 
 // Provider de los posteos
-final postProvider =
+final postProviderr =
     StateNotifierProvider<PostProvider, PostProviderState>((ref) {
   final dataBaseService = DatabaseService();
   return PostProvider(dataBaseService);

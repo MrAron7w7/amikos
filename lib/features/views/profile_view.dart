@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:twitter_clone/features/viewmodels/post_provider.dart';
-import 'package:twitter_clone/features/viewmodels/user_provider.dart';
+import 'package:twitter_clone/features/viewmodels/providers/post_provider.dart';
+import 'package:twitter_clone/features/viewmodels/providers/user_provider.dart';
 import 'package:twitter_clone/features/views/views.dart';
 
 import '/core/core.dart';
@@ -32,7 +32,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   void initState() {
     super.initState();
 
-    _loadUser();
+    Future.delayed(Duration.zero, _loadUser);
   }
 
   Future<void> _loadUser() async {
@@ -80,7 +80,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   @override
   Widget build(BuildContext context) {
     final allUserPost =
-        ref.watch(postProvider.notifier).filterUserPost(ui: widget.uid);
+        ref.watch(postUserProvider.notifier).filterUserPosts(uid: widget.uid);
     return Scaffold(
       appBar: AppBar(
         title: Text(_isLoading ? '' : user!.name),

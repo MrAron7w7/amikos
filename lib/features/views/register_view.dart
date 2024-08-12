@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/features/services/auth/auth_service.dart';
 import 'package:twitter_clone/features/services/database/database_service.dart';
+import 'package:twitter_clone/features/services/notification/firebase_notification.dart';
 import 'package:twitter_clone/features/views/views.dart';
 
 import '/core/core.dart';
@@ -50,7 +51,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text == _confirmPasswordController.text) {
         // Inicializamos la reques del servicio para obtener el token
-        //FirebaseNotification().initNotification();
+        await FirebaseNotification().initNotification();
 
         showLoadingCircle(context);
         try {
@@ -64,19 +65,11 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
           await _db.saveUserInfoInFirebase(
             name: _nameController.text,
             email: _emailController.text,
-            tokenFcm: '',
           );
 
-          // // Inicializar las notificaciones y obtener el token
-          // final firebaseNotification = FirebaseNotification();
-          // await firebaseNotification.initNotification();
-
-          // // Obtener el token FCM y actualizarlo en el perfil del usuario
-          // final tokenFcm = await FirebaseMessaging.instance.getToken();
-          // if (tokenFcm != null) {
-          //   final user = ref.read(userProvider.notifier);
-          //   await user.updateTokenFcm(tokenFcm: tokenFcm);
-          // }
+          // Guardamos el token
+          final uid = _auth.getCurrentUserUid();
+          await _db.updateFCMToken(uid);
 
           context.go('/${HomeView.name}');
         } catch (e) {
