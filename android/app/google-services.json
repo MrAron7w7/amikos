@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "326133783301",
+    "project_id": "twitterclone-ddf2d",
+    "storage_bucket": "twitterclone-ddf2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326133783301:android:79cb253babb90566f1f56c",
+        "android_client_info": {
+          "package_name": "com.example.twitter_clone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgQKpMmgm6Txp7_lxuihyEHK7MvpuDhBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
